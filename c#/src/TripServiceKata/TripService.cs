@@ -7,10 +7,17 @@ namespace TripServiceKata
 {
     public class TripService
     {
+        private readonly IUserLoginInformation userLoginInformation;
+
+        public TripService(IUserLoginInformation userLoginInformation)
+        {
+            this.userLoginInformation = userLoginInformation;
+        }
+
         public List<Trip> GetTripsByUser(User user)
         {
             List<Trip> tripList = new List<Trip>();
-            User loggedUser = UserSession.GetInstance().GetLoggedUser();
+            User loggedUser = userLoginInformation.GetLoggedUser();
             bool isFriend = false;
             if (loggedUser != null)
             {

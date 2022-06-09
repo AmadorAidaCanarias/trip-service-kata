@@ -1,16 +1,19 @@
-﻿using System;
+﻿using NSubstitute;
+using System;
+using TripServiceKata.Entity;
 using TripServiceKata.Exception;
 using Xunit;
 
-namespace TripServiceKata.Tests
-{
+namespace TripServiceKata.Tests {
     public class TripServiceShould
     {
         [Fact(DisplayName ="Should Return UserNotLoggedInException When Not Logged User")]
         public void return_null_when_send_null() {
             // Arrange
-            var tripService = new TripService();
-
+            var userLoginInformation = Substitute.For<IUserLoginInformation>();
+            userLoginInformation.GetLoggedUser().Returns((User) null);
+            var tripService = new TripService(userLoginInformation);
+            
             // Act
             void Result() => tripService.GetTripsByUser(null);
 
