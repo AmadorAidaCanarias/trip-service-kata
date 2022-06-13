@@ -1,19 +1,25 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace TripServiceKata.Entity
 {
-    public class User
+    public class User : IUser
     {
-        private List<User> friends = new List<User>();
+        private readonly List<IUser> friends;
 
-        public List<User> GetFriends()
+        public User()
         {
-            return friends;
+            friends = new List<IUser>();
         }
 
-        public void AddFriend(User user)
+        public void AddFriend(IUser user)
         {
             friends.Add(user);
+        }
+
+        public bool IsFriend(IUser loggedUser)
+        {
+            return Enumerable.Contains(friends, loggedUser);
         }
     }
 }

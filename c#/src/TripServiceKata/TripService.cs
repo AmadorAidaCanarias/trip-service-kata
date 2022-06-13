@@ -14,23 +14,13 @@ namespace TripServiceKata
             this.userLoginInformation = userLoginInformation;
         }
 
-        public List<Trip> GetTripsByUser(User user)
+        public List<Trip> GetTripsByUser(IUser user)
         {
             List<Trip> tripList = new List<Trip>();
-            User loggedUser = userLoginInformation.GetLoggedUser();
-            bool isFriend = false;
+            IUser loggedUser = userLoginInformation.GetLoggedUser();
             if (loggedUser != null)
             {
-                foreach (User friend in user.GetFriends())
-                {
-                    if (friend.Equals(loggedUser))
-                    {
-                        isFriend = true;
-                        break;
-                    }
-                }
-
-                if (isFriend)
+                if (user.IsFriend(loggedUser))
                 {
                     tripList = TripDAO.FindTripsByUser(user);
                 }
