@@ -1,5 +1,6 @@
 ﻿using NSubstitute;
 using System;
+using System.Collections.Generic;
 using TripServiceKata.Entity;
 using TripServiceKata.Exception;
 using Xunit;
@@ -19,6 +20,17 @@ namespace TripServiceKata.Tests {
 
             // Assert
             Assert.Throws<UserNotLoggedInException>((Action) Result);
+        }
+
+        [Fact(DisplayName = "Should Return Empty Trip List When not Is Friend")]
+        public void return_empty_list_trip_when_not_is_friend()
+        {
+            var userLoginInformation = Substitute.For<IUserLoginInformation>();
+            var tripService = new TripService(userLoginInformation);
+            var user = new User();
+            var userTrips = tripService.GetTripsByUser(user);
+
+            Assert.Equal(userTrips, new List<Trip>());
         }
     }
 }
