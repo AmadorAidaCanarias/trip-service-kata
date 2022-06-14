@@ -11,8 +11,9 @@ namespace TripServiceKata.Tests {
         public void return_null_when_send_null() {
             // Arrange
             var userLoginInformation = Substitute.For<IUserLoginInformation>();
+            var userTrips = Substitute.For<IUserTrips>();
             userLoginInformation.GetLoggedUser().Returns((IUser)null);
-            var tripService = new TripService(userLoginInformation);
+            var tripService = new TripService(userLoginInformation, userTrips);
 
             // Act
             void Result() => tripService.GetTripsByUser(null);
@@ -27,12 +28,13 @@ namespace TripServiceKata.Tests {
             var loggedUser = new User();
             userLoginInformation.GetLoggedUser().Returns(loggedUser);
             var user = Substitute.For<IUser>();
+            var userTrips = Substitute.For<IUserTrips>();
             user.IsFriend(loggedUser).Returns(false);
-            var tripService = new TripService(userLoginInformation);
+            var tripService = new TripService(userLoginInformation, userTrips);
 
-            var userTrips = tripService.GetTripsByUser(user);
+            var trips = tripService.GetTripsByUser(user);
 
-            Assert.Equal(userTrips, new List<Trip>());
+            Assert.Equal(trips, new List<Trip>());
         }
 
         [Fact(DisplayName = "Should return trip list with data when is friend")]
@@ -42,12 +44,14 @@ namespace TripServiceKata.Tests {
             userLoginInformation.GetLoggedUser().Returns(loggedUser);
             var user = Substitute.For<IUser>();
             user.IsFriend(loggedUser).Returns(true);
+            var userTrips = Substitute.For<IUserTrips>();
+            var desiredTrips = new List<Trip>() {new Trip()};
+            userTrips.TripsFromUser(user).Returns(desiredTrips);
+            var tripService = new TripService(userLoginInformation, userTrips);
 
-            var tripService = new TripService(userLoginInformation);
+            var trips = tripService.GetTripsByUser(user);
 
-            var userTrips = tripService.GetTripsByUser(user);
-
-            Assert.Equal(userTrips, new List<Trip>() { new Trip() });
+            Assert.Equal(trips, desiredTrips);
         }
     }
 }
